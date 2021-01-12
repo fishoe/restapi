@@ -1,5 +1,6 @@
 .vscode/*
-config/__pycache__
-account/__pycache__
-account/migrations
-chat_app/migrations
+config/__pycache__/*
+account/__pycache__/*
+account/migrations/*
+chat_app/migrations/*
+db.sqlite3
