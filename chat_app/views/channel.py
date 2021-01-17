@@ -39,35 +39,35 @@ class Channel(View):
         return error_response(403,"permission error, not member")
 
     def post(self,request,channel_id):
-        # try:
-        ch = ch_model.objects.get(id=channel_id)
-        text = request.POST.get('context',"")
-        member = member_model.objects.get(team=ch.team,user=request.user)
-        new_messages = msg_model(channel=ch,author=member,context=text)
-        new_messages.save()
-        #unread
-        recievers = ch.team.members.all().exclude(user=request.user)
-        
-        new_messages.unread.set(
-            recievers,
-            through_defaults={
-                "is_read":False,
-                "checked_date":None
-            }
-        )
-        
-        return JsonResponse(data={
-            "id":ch.id,
-            "message": {
-                "id":new_messages.id,
-                "channel":ch.id,
-                "author":member.id,
-                "context":text,
-                "date":new_messages.date
-            }
-        })
-        # except Exception:
-        return error_response(400,"bad req")
+        try:
+            ch = ch_model.objects.get(id=channel_id)
+            text = request.POST.get('context',"")
+            member = member_model.objects.get(team=ch.team,user=request.user)
+            new_messages = msg_model(channel=ch,author=member,context=text)
+            new_messages.save()
+            #unread
+            recievers = ch.team.members.all().exclude(user=request.user)
+            
+            new_messages.unread.set(
+                recievers,
+                through_defaults={
+                    "is_read":False,
+                    "checked_date":None
+                }
+            )
+            
+            return JsonResponse(data={
+                "id":ch.id,
+                "message": {
+                    "id":new_messages.id,
+                    "channel":ch.id,
+                    "author":member.id,
+                    "context":text,
+                    "date":new_messages.date
+                }
+            })
+        except Exception:
+            return error_response(400,"bad req")
 
     def delete(self,request,channel_id):
         return error_response(400,"bad req")
